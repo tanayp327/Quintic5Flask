@@ -2,6 +2,7 @@ import json
 from flask import Blueprint, request, jsonify
 from flask_restful import Api, Resource # used for REST API building
 from datetime import datetime
+import uuid
 
 exercise_api = Blueprint('exercise_api', __name__, 
                          url_prefix='/api/exercises')
@@ -45,7 +46,7 @@ class ExerciseAPI:
                 return {'message': f'Calories burned is missing, or is not a positive integer'}, 400
 
             ''' #1: Key code block, setup EXERCISE OBJECT '''
-            eo = {'type': type, 'duration': duration, 'reps': reps, 'calories_burned': calories_burned}
+            eo = {'id': str(uuid.uuid4()), 'type': type, 'duration': duration, 'reps': reps, 'calories_burned': calories_burned}
             if date is not None:
                 eo['date'] = date
 
@@ -70,6 +71,56 @@ class ExerciseAPI:
             # prepare output in json
             return jsonify(data)
 
+    class _Update(Resource):
+        def put(self, exercise_id):
+            # read existing data from file
+            with open(ExerciseAPI.filetype, 'r') as f:
+                data = json.load(f)
+            
+            # find the exercise with the given id
+            for i, exercise in enumerate(data):
+                if 'id' in exercise and exercise['id'] == exercise_id:
+                    # update the exercise with the new data
+                    body = request.get_json()
+                    if 'type' in body and len(body['type']) >= 2:
+                        exercise['type'] = body['type']
+                    if 'duration' in body and isinstance(body['duration'], int) and body['duration'] >= 1:
+                        exercise['duration'] = body['duration']
+                    if 'date' in body:
+                        try:
+                            datetime.strptime(body['date'], '%Y-%m-%d')
+                            exercise['date'] = body['date']
+                        except:
+                            with open(ExerciseAPI.filetype, 'w') as f:
+                                json.dump(data, f)
+                            
+                            return exercise, 200
+                         # if no exercise with the given id was found, return error message
+                        return {'message': f'Exercise with id {exercise_id} not found'}, 404
+
+    class _Delete(Resource):
+        def delete(self, exercise_id):
+            # read existing data from file
+            with open(ExerciseAPI.filetype, 'r') as f:
+                data = json.load(f)
+            
+            # find the exercise with the given id
+            for i, exercise in enumerate(data):
+                if 'id' in exercise and exercise['id'] == exercise_id:
+                    # remove the exercise from the list
+                    del data[i]
+                    # write updated data to file
+                    with open(ExerciseAPI.filetype, 'w') as f:
+                        json.dump(data, f)
+                    # return success message
+                    return {'message': f'Exercise with id {exercise_id} has been deleted'}
+            
+            # if no exercise with the given id was found, return error message
+            return {'message': f'Exercise with id {exercise_id} not found'}, 404
+
+
     # building RESTapi endpoint
     api.add_resource(_Create, '/create')
+    api.add_resource(_Delete, '/delete/<int:exercise_id>')
     api.add_resource(_Read, '/')
+    api.add_resource(_Update, '/exercise/<string:exercise_id>')
