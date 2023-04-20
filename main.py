@@ -8,11 +8,13 @@ from __init__ import app,db  # Definitions initialization
 from model.jokes import initJokes
 from model.users import initUsers
 from model.players import initPlayers
+from model.films import initFilms
 
 
 # setup APIs
 from api.user import user_api # Blueprint import api definition
 from api.exercise import exercise_api
+from api.film import film_api
 
 # setup App pages
 from projects.projects import app_projects # Blueprint directory import projects definition
@@ -21,6 +23,7 @@ from projects.projects import app_projects # Blueprint directory import projects
 app.register_blueprint(user_api) # register api routes
 app.register_blueprint(app_projects) # register app pages
 app.register_blueprint(exercise_api)
+app.register_blueprint(film_api)
 
 @app.errorhandler(404)  # catch for URL not found
 def page_not_found(e):
@@ -41,7 +44,7 @@ def activate_job():  # activate these items
     initJokes()
     initUsers()
     initPlayers()
-
+    initFilms()
 # this runs the application on the development server
 if __name__ == "__main__":
     # change name for testing
