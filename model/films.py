@@ -112,9 +112,9 @@ class Films(db.Model):
             "name": self.name,
             "year": self.year,
             "language":self.language,
-            "episode count": self.epcount,
-            "episode list": self.eplist,
-            "trailer link": self.trailer
+            "epcount": self.epcount,
+            "eplist": self.eplist,
+            "trailer": self.trailer
         }
     #"posts": [post.read() for post in self.posts]
     # CRUD update: updates user name, password, phone

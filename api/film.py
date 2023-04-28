@@ -26,14 +26,14 @@ class FilmAPI:
             # look for password and dob
             #password = body.get('password')
             #dob = body.get('dob')
-            year = body.get("year")
+            year = int(body.get("year"))
             if year is None or year < 1800:
                 return {'message': f'Year is missing, or is before 1800'}, 210
             ''' #1: Key code block, setup USER OBJECT '''
-            epcount = body.get("epcount")
+            epcount = int(body.get("epcount"))
             if epcount is None or epcount < 1:
                 return {'message': f'Episode count is missing, or is not a valid count'}, 210
-            eplist = body.get("eplist")
+            eplist = body.get("eplist").split(',')
             if eplist is None or len(eplist) < 1:
                 return {'message': f'Eplist is missing, or is less than 1 element'}, 210
             language = body.get("language")
