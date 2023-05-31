@@ -16,6 +16,7 @@ from api.user import user_api # Blueprint import api definition
 from api.exercise import exercise_api
 from api.film import film_api
 from api.leaderboard import leaderboard_api
+from api.rocket import rocket_api
 
 # setup App pages
 from projects.projects import app_projects # Blueprint directory import projects definition
@@ -26,6 +27,7 @@ app.register_blueprint(app_projects) # register app pages
 app.register_blueprint(exercise_api)
 app.register_blueprint(film_api)
 app.register_blueprint(leaderboard_api)
+app.register_blueprint(rocket_api)
 
 @app.errorhandler(404)  # catch for URL not found
 def page_not_found(e):
