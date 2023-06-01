@@ -1,11 +1,9 @@
 from flask import Flask, jsonify, request, Blueprint, app
 from flask_restful import Resource, Api
-from flask_cors import CORS
 
 rocket_api = Blueprint('rocket_api', __name__, 
                             url_prefix='/api/rocket')
 api = Api(rocket_api)
-CORS(app)
 
 # Constants
 GRAVITY = 9.8  # Acceleration due to gravity
